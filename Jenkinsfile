@@ -1,11 +1,15 @@
 pipeline {
-  agent any
-  stages {
-    stage('checkout') {
-      steps {
-        git(url: 'git@github.com:lanmarco/popmash.git', branch: 'master')
-      }
+    agent {
+        docker {
+            image 'maven:3-alpine'
+            args '-v /root/.m2:/root/.m2'
+        }
     }
-
-  }
+    stages {
+        stage('build') {
+            steps {
+                sh 'mvn -B -DskipTests clean package'
+            }
+        }
+    }
 }
